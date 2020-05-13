@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'coin_data.dart';
 import 'services/apiService.dart';
 import 'tickerBrain.dart';
 
@@ -10,10 +11,10 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
-  List<DropdownMenuItem<String>> dropDownItem;
+//  List<DropdownMenuItem<String>> dropDownItem;
   ApiService _apiService = new ApiService();
 
-//  List<Widget> dropDownItem;
+  List<Widget> dropDownItem;
 
   TickerBrain _tickerBrain = new TickerBrain();
   String currentCurrency = 'INR';
@@ -23,8 +24,8 @@ class _PriceScreenState extends State<PriceScreen> {
   void initState() {
     super.initState();
     //You can also directly specify this in the item: property in DropDownButton, as in getDropDown method
+    dropDownItem = _tickerBrain.getDropDownMenuItemCupertino();
 //    dropDownItem = _tickerBrain.getDropDownMenuItem();
-    dropDownItem = _tickerBrain.getDropDownMenuItem();
     getExchangeRate(currentCurrency);
   }
 
@@ -67,27 +68,31 @@ class _PriceScreenState extends State<PriceScreen> {
             ),
           ),
           Container(
-            height: 150.0,
-            alignment: Alignment.center,
-            padding: EdgeInsets.only(bottom: 30.0),
-            color: Colors.lightBlue,
-//              child: CupertinoPicker(
-//                  backgroundColor: Colors.lightBlue,
-//                  itemExtent: 40.0,
-//                  onSelectedItemChanged: (selectedItem) {
-//                    print(dropDownItem[selectedItem]);
-//                  },
-//                  children: dropDownItem)
-            child: DropdownButton(
-              items: dropDownItem,
-              value: currentCurrency,
-              onChanged: (value) {
-                setState(() {
-                  currentCurrency = value;
-                  getExchangeRate(currentCurrency);
-                });
-              },
-            ),
+              height: 150.0,
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(bottom: 30.0),
+              color: Colors.lightBlue,
+              child: CupertinoPicker(
+                  backgroundColor: Colors.lightBlue,
+                  itemExtent: 40.0,
+                  onSelectedItemChanged: (selectedIndex) {
+                    setState(() {
+                      currentCurrency = currenciesList[selectedIndex];
+                      print(currentCurrency);
+                      getExchangeRate(currentCurrency);
+                    });
+                  },
+                  children: dropDownItem)
+//            child: DropdownButton(
+//              items: dropDownItem,
+//              value: currentCurrency,
+//              onChanged: (value) {
+//                setState(() {
+//                  currentCurrency = value;
+//                  getExchangeRate(currentCurrency);
+//                });
+//              },
+//            ),
           ),
         ],
       ),
