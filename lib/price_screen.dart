@@ -1,4 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'services/apiService.dart';
+import 'tickerBrain.dart';
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -6,6 +10,31 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
+  List<DropdownMenuItem<String>> dropDownItem;
+  ApiService _apiService = new ApiService();
+
+//  List<Widget> dropDownItem;
+
+  TickerBrain _tickerBrain = new TickerBrain();
+  String currentCurrency = 'INR';
+  String currentRate = '0';
+
+  @override
+  void initState() {
+    super.initState();
+    //You can also directly specify this in the item: property in DropDownButton, as in getDropDown method
+//    dropDownItem = _tickerBrain.getDropDownMenuItem();
+    dropDownItem = _tickerBrain.getDropDownMenuItem();
+    getExchangeRate(currentCurrency);
+  }
+
+  void getExchangeRate(String currentCurrencyNew) async {
+    String rate = await _apiService.getOneExchangeRate(currentCurrencyNew);
+    setState(() {
+      currentRate = rate;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +56,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = ? USD',
+                  '1 BTC = $currentRate $currentCurrency',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
@@ -42,7 +71,23 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: null,
+//              child: CupertinoPicker(
+//                  backgroundColor: Colors.lightBlue,
+//                  itemExtent: 40.0,
+//                  onSelectedItemChanged: (selectedItem) {
+//                    print(dropDownItem[selectedItem]);
+//                  },
+//                  children: dropDownItem)
+            child: DropdownButton(
+              items: dropDownItem,
+              value: currentCurrency,
+              onChanged: (value) {
+                setState(() {
+                  currentCurrency = value;
+                  getExchangeRate(currentCurrency);
+                });
+              },
+            ),
           ),
         ],
       ),
