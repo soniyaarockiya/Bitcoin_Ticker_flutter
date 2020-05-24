@@ -1,18 +1,25 @@
+import 'package:bitcoin_ticker/coin_data.dart';
+
 import 'networkCall.dart';
 
 class ApiService {
-  String apiKey = "FC9E8FB6-B3C2-4324-B10D-4FFB4BE517D1";
+  String apiKey = "A99BFEF2-6403-44A2-8DB9-AA0960AD9C5B";
 
   NetworkCall _networkCall = new NetworkCall();
 
-  Future<String> getOneExchangeRate(String currency) async {
-    String url =
-        "https://rest.coinapi.io/v1/exchangerate/BTC/${currency.toString().toUpperCase()}?apikey=$apiKey";
-//    https://rest.coinapi.io/v1/exchangerate/BTC/SGD?apikey=FC9E8FB6-B3C2-4324-B10D-4FFB4BE517D
+  Future<Map<String, String>> getOneExchangeRate(String currency) async {
+    Map<String, String> cryptoPriceList = {};
 
-    dynamic response = await _networkCall.getResponse(url);
-    double rate = response['rate'];
+    for (String crypto in cryptoList) {
+      String url =
+          "https://rest.coinapi.io/v1/exchangerate/${crypto.toUpperCase().toString()}/${currency.toString().toUpperCase()}?apikey=$apiKey";
+      dynamic response = await _networkCall.getResponse(url);
+      double rate = response['rate'];
+      print(rate);
+      print(crypto);
+      cryptoPriceList[crypto] = rate.toStringAsFixed(0);
+    }
 
-    return rate.toInt().toString();
+    return cryptoPriceList;
   }
 }

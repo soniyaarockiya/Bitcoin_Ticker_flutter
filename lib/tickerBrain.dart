@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'subWidgets/cryptoCard.dart';
 import 'coin_data.dart';
 
 class TickerBrain {
